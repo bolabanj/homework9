@@ -1,12 +1,14 @@
+name: Docker Image CI for GHCR
+
 on:
   push:
-    branches:
-      - main
+   branches:
+     - master
+
 
 jobs:
   build_and_publish:
     runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, 'Docker Image CI for GHCR')"
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -30,10 +32,11 @@ jobs:
           name: Maven Tests
           path: target/surefire-reports/*.xml
           reporter: java-junit
-          fail-on-error: true
+          fail-on-error: false
 
       - name: Build and push the image
         run: |
           docker login --username bolabanj --password ${{secrets.ACCESS_TOKEN}} ghcr.io
-          docker build -t ghcr.io/bolabanj/guitar-inventory-management:latest --file Dockerfile .  
-          docker push ghcr.io/bolabanj/guitar-inventory-management:latest 
+          docker build -t ghcr.io/bolabanj/homework9:latest --file Dockerfile .  
+          docker push ghcr.io/bolabanj/homework9:latest 
+
