@@ -1,8 +1,10 @@
-name: Docker Image CI for GHCR
-
 on:
-  push
-
+  push:
+    branches:
+      - main
+    # Filter events based on the commit message
+    paths-ignore:
+      - 'none'
 jobs:
   build_and_publish:
     runs-on: ubuntu-latest
@@ -15,6 +17,11 @@ jobs:
         with:
           java-version: '17'
           distribution: 'adopt'
+
+      # Check if the commit message contains the specified string
+      - name: Check Commit Message
+        if: contains(github.event.head_commit.message, 'Docker Image CI for GHCR')
+        run: exit 0  # Exit successfully to skip the rest of the steps
 
       - name: Build the package
         run: mvn --batch-mode -DskipTests package
@@ -34,5 +41,5 @@ jobs:
       - name: Build and push the image
         run: |
           docker login --username bolabanj --password ${{secrets.ACCESS_TOKEN}} ghcr.io
-          docker build -t ghcr.io/bolabanj/homework9:latest --file Dockerfile .  
-          docker push ghcr.io/bolabanj/homework9:latest 
+          docker build -t ghcr.io/bolabanj/guitar-inventory-management:latest --file Dockerfile .  
+          docker push ghcr.io/bolabanj/guitar-inventory-management:latest 
