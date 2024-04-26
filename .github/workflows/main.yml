@@ -2,12 +2,11 @@ on:
   push:
     branches:
       - main
-    # Filter events based on the commit message
-    paths-ignore:
-      - 'none'
+
 jobs:
   build_and_publish:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'Docker Image CI for GHCR')"
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -17,11 +16,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'adopt'
-
-      # Check if the commit message contains the specified string
-      - name: Check Commit Message
-        if: contains(github.event.head_commit.message, 'Docker Image CI for GHCR')
-        run: exit 0  # Exit successfully to skip the rest of the steps
 
       - name: Build the package
         run: mvn --batch-mode -DskipTests package
