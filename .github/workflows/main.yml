@@ -33,7 +33,7 @@ jobs:
           path: target/surefire-reports/*.xml
           reporter: java-junit
           fail-on-error: true
-          allowEmptyResults: true
+          fail-on-empty: false
 
 
       - name: Build and push the image
